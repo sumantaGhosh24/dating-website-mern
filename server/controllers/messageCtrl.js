@@ -8,7 +8,7 @@ const messageCtrl = {
         from_userId: userId,
         to_userId: correspondingUserId,
       };
-      const foundMessages = await Message.find(query).toArray();
+      const foundMessages = await Message.find(query);
       return res.send(foundMessages);
     } catch (error) {
       return res.status(500).send(error.message);
@@ -17,8 +17,9 @@ const messageCtrl = {
   addMessage: async (req, res) => {
     try {
       const message = req.body.message;
-      const insertedMessage = await Message.insertOne(message);
-      return res.send(insertedMessage);
+      const newMessage = new Message(message);
+      await newMessage.save();
+      return res.send(newMessage);
     } catch (error) {
       return res.status(500).send(error.message);
     }

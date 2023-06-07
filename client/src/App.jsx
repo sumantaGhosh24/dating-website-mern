@@ -1,8 +1,23 @@
+import {BrowserRouter, Routes, Route} from "react-router-dom";
+import {useCookies} from "react-cookie";
+
+import {Home, Dashboard, OnBoarding} from "./pages";
+
 const App = () => {
+  const [cookies, setCookie, removeCookie] = useCookies(["user"]);
+
+  const authToken = cookies.AuthToken;
+
+  console.log("cookies", cookies);
+
   return (
-    <div>
-      <h1>Dating app clone MERN</h1>
-    </div>
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<Home />} />
+        {authToken && <Route path="/dashboard" element={<Dashboard />} />}
+        {authToken && <Route path="/onboarding" element={<OnBoarding />} />}
+      </Routes>
+    </BrowserRouter>
   );
 };
 

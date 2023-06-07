@@ -4,7 +4,7 @@ const userCtrl = {
   individualUser: async (req, res) => {
     try {
       const userId = req.query.userId;
-      const query = {_id: userId};
+      const query = {user_id: userId};
       const user = await User.findOne(query);
       return res.send(user);
     } catch (error) {
@@ -14,9 +14,9 @@ const userCtrl = {
   addMatch: async (req, res) => {
     try {
       const {userId, matchedUserId} = req.body;
-      const query = {_id: userId};
+      const query = {user_id: userId};
       const updateDocument = {
-        $push: {matches: {_id: matchedUserId}},
+        $push: {matches: {user_id: matchedUserId}},
       };
       const user = await User.updateOne(query, updateDocument);
       return res.send(user);
@@ -29,14 +29,14 @@ const userCtrl = {
       const userIds = JSON.parse(req.query.userIds);
       const pipeline = [
         {
-          $match: {
-            _id: {
-              $in: userIds,
-            },
-          },
-        },
-      ];
-      const foundUsers = await User.aggregate(pipeline).toArray();
+          '$match': {
+            'user_id': {
+                '$in': userIds
+            }
+          }
+        }
+      ]
+      const foundUsers = await User.aggregate(pipeline);
       return res.json(foundUsers);
     } catch (error) {
       return res.status(500).send(error.message);
@@ -46,7 +46,7 @@ const userCtrl = {
     try {
       const gender = req.query.gender;
       const query = {gender_identity: {$eq: gender}};
-      const foundUsers = await User.find(query).toArray();
+      const foundUsers = await User.find(query);      
       return res.json(foundUsers);
     } catch (error) {
       return res.status(500).send(error.message);
@@ -55,7 +55,7 @@ const userCtrl = {
   updateUser: async (req, res) => {
     try {
       const formData = req.body.formData;
-      const query = {_id: formData.user_id};
+      const query = {user_id: formData.user_id};
       const updateDocument = {
         $set: {
           first_name: formData.first_name,
@@ -71,6 +71,7 @@ const userCtrl = {
         },
       };
       const insertedUser = await User.updateOne(query, updateDocument);
+      
       return res.json(insertedUser);
     } catch (error) {
       return res.status(500).send(error.message);

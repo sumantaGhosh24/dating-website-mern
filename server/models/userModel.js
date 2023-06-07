@@ -11,8 +11,9 @@ const userSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-    matches: {
-      type: Object,
+    user_id: {
+      type: String,
+      required: true,
     },
     first_name: {
       type: String,

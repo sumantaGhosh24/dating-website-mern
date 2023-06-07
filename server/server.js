@@ -3,7 +3,6 @@ require("dotenv").config();
 const express = require("express");
 const cors = require("cors");
 const morgan = require("morgan");
-const cookieParser = require("cookie-parser");
 const helmet = require("helmet");
 
 const connectDB = require("./lib/connectDb");
@@ -19,7 +18,6 @@ app.use(express.urlencoded({extended: true}));
 app.use(helmet());
 app.use(cors(corsOptions));
 app.use(morgan("dev"));
-app.use(cookieParser());
 
 app.get("/api", (req, res) => {
   return res.json({message: "Dating App MERN API!"});
