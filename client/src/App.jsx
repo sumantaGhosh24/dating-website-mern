@@ -4,11 +4,9 @@ import {useCookies} from "react-cookie";
 import {Home, Dashboard, OnBoarding} from "./pages";
 
 const App = () => {
-  const [cookies, setCookie, removeCookie] = useCookies(["user"]);
+  const [cookies] = useCookies(["user"]);
 
   const authToken = cookies.AuthToken;
-
-  console.log("cookies", cookies);
 
   return (
     <BrowserRouter>

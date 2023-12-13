@@ -1,4 +1,5 @@
 import {useState} from "react";
+import propTypes from "prop-types";
 
 import {ChatHeader, ChatDisplay, MatchesDisplay} from "./";
 
@@ -25,6 +26,10 @@ const ChatContainer = ({user}) => {
       {clickedUser && <ChatDisplay user={user} clickedUser={clickedUser} />}
     </div>
   );
+};
+
+ChatContainer.propTypes = {
+  user: propTypes.any,
 };
 
 export default ChatContainer;

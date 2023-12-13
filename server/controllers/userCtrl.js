@@ -6,9 +6,9 @@ const userCtrl = {
       const userId = req.query.userId;
       const query = {user_id: userId};
       const user = await User.findOne(query);
-      return res.send(user);
+      return res.json(user);
     } catch (error) {
-      return res.status(500).send(error.message);
+      return res.status(500).json({message: error.message});
     }
   },
   addMatch: async (req, res) => {
@@ -29,13 +29,13 @@ const userCtrl = {
       const userIds = JSON.parse(req.query.userIds);
       const pipeline = [
         {
-          '$match': {
-            'user_id': {
-                '$in': userIds
-            }
-          }
-        }
-      ]
+          $match: {
+            user_id: {
+              $in: userIds,
+            },
+          },
+        },
+      ];
       const foundUsers = await User.aggregate(pipeline);
       return res.json(foundUsers);
     } catch (error) {
@@ -46,7 +46,7 @@ const userCtrl = {
     try {
       const gender = req.query.gender;
       const query = {gender_identity: {$eq: gender}};
-      const foundUsers = await User.find(query);      
+      const foundUsers = await User.find(query);
       return res.json(foundUsers);
     } catch (error) {
       return res.status(500).send(error.message);
@@ -71,7 +71,6 @@ const userCtrl = {
         },
       };
       const insertedUser = await User.updateOne(query, updateDocument);
-      
       return res.json(insertedUser);
     } catch (error) {
       return res.status(500).send(error.message);

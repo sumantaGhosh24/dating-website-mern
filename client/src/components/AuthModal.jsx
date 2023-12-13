@@ -2,6 +2,7 @@ import {useState} from "react";
 import {useNavigate} from "react-router-dom";
 import {useCookies} from "react-cookie";
 import axios from "axios";
+import propTypes from "prop-types";
 
 const AuthModal = ({setShowModal, isSignUp}) => {
   const [email, setEmail] = useState(null);
@@ -20,7 +21,7 @@ const AuthModal = ({setShowModal, isSignUp}) => {
     e.preventDefault();
     try {
       if (isSignUp && password !== confirmPassword) {
-        setError("Password need to match!");
+        setError("Password and confirm password not match!");
         return;
       }
       const response = await axios.post(
@@ -34,19 +35,19 @@ const AuthModal = ({setShowModal, isSignUp}) => {
       if (success && !isSignUp) navigate("/dashboard");
       window.location.reload();
     } catch (error) {
-      console.log(error);
+      setError(error.message);
     }
   };
 
   return (
     <div className="auth-modal">
-      <div className="close-icon" onClick={handleClick}>
+      <div className="auth-close-icon" onClick={handleClick}>
         ✖
       </div>
-      <h2 style={{marginBottom: "10px"}}>{isSignUp ? "Register" : "Log In"}</h2>
-      <p style={{marginBottom: "10px"}}>
+      <h2 className="auth-modal-title">{isSignUp ? "Register" : "Log In"}</h2>
+      <p className="auth-modal-description">
         Lorem ipsum, dolor sit amet consectetur adipisicing elit. Quaerat
-        asperiores inventore maxime!
+        asperiores inventore maxime.
       </p>
       <form onSubmit={handleSubmit}>
         <input
@@ -76,10 +77,15 @@ const AuthModal = ({setShowModal, isSignUp}) => {
           />
         )}
         <input className="secondary-button" type="submit" />
-        <p>{error}</p>
+        <p className="form-error">{error}</p>
       </form>
     </div>
   );
+};
+
+AuthModal.propTypes = {
+  setShowModal: propTypes.any,
+  isSignUp: propTypes.any,
 };
 
 export default AuthModal;

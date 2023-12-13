@@ -1,4 +1,4 @@
-import {useState} from "react";
+import {useState, useEffect} from "react";
 import {useCookies} from "react-cookie";
 import {useNavigate} from "react-router-dom";
 import axios from "axios";
@@ -6,10 +6,12 @@ import axios from "axios";
 import {Nav} from "../components";
 
 const OnBoarding = () => {
-  const [cookies, setCookies, removeCookie] = useCookies(null);
+  const [cookies] = useCookies(null);
+
+  const userId = cookies.UserId;
 
   const [formData, setFormData] = useState({
-    user_id: cookies.UserId,
+    user_id: userId,
     first_name: "",
     dob_day: "",
     dob_month: "",
@@ -22,6 +24,32 @@ const OnBoarding = () => {
     matches: [],
   });
 
+  useEffect(() => {
+    const getUser = async () => {
+      try {
+        const response = await axios.get("http://localhost:8080/api/user", {
+          params: {userId},
+        });
+        setFormData({
+          user_id: userId,
+          first_name: response.data.first_name,
+          dob_day: response.data.dob_day,
+          dob_month: response.data.dob_month,
+          dob_year: response.data.dob_year,
+          show_gender: response.data.show_gender,
+          gender_identity: response.data.gender_identity,
+          gender_interest: response.data.gender_interest,
+          url: response.data.url,
+          about: response.data.about,
+          matches: response.data.matches,
+        });
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    return () => getUser();
+  }, [userId]);
+
   let navigate = useNavigate();
 
   const handleSubmit = async (e) => {
@@ -30,7 +58,6 @@ const OnBoarding = () => {
       const response = await axios.put("http://localhost:8080/api/user", {
         formData,
       });
-      console.log(response);
       const success = response.status === 200;
       if (success) navigate("/dashboard");
     } catch (error) {
@@ -39,7 +66,6 @@ const OnBoarding = () => {
   };
 
   const handleChange = (e) => {
-    console.log("e", e);
     const value =
       e.target.type === "checkbox" ? e.target.checked : e.target.value;
     const name = e.target.name;
@@ -53,9 +79,9 @@ const OnBoarding = () => {
     <>
       <Nav minimal={true} setShowModal={() => {}} showModal={false} />
       <div className="onboarding">
-        <h2 style={{marginTop: "20px"}}>Create Account</h2>
-        <form onSubmit={handleSubmit}>
-          <section>
+        <form onSubmit={handleSubmit} className="onboarding-form">
+          <h2 className="onboarding-title">Create Account</h2>
+          <div className="form-control">
             <label htmlFor="first_name">First Name</label>
             <input
               id="first_name"
@@ -66,7 +92,8 @@ const OnBoarding = () => {
               value={formData.first_name}
               onChange={handleChange}
             />
-
+          </div>
+          <div className="form-control-multiple">
             <label>Birthday</label>
             <div className="multiple-input-container">
               <input
@@ -97,7 +124,8 @@ const OnBoarding = () => {
                 onChange={handleChange}
               />
             </div>
-
+          </div>
+          <div className="form-control-multiple">
             <label>Gender</label>
             <div className="multiple-input-container">
               <input
@@ -128,7 +156,8 @@ const OnBoarding = () => {
               />
               <label htmlFor="more-gender-identity">More</label>
             </div>
-
+          </div>
+          <div className="form-control">
             <label htmlFor="show-gender">Show Gender on my Profile</label>
             <input
               id="show-gender"
@@ -137,7 +166,8 @@ const OnBoarding = () => {
               onChange={handleChange}
               checked={formData.show_gender}
             />
-
+          </div>
+          <div className="form-control-multiple">
             <label>Show Me</label>
             <div className="multiple-input-container">
               <input
@@ -168,7 +198,8 @@ const OnBoarding = () => {
               />
               <label htmlFor="everyone-gender-interest">Everyone</label>
             </div>
-
+          </div>
+          <div className="form-control">
             <label htmlFor="about">About me</label>
             <input
               id="about"
@@ -179,10 +210,8 @@ const OnBoarding = () => {
               value={formData.about}
               onChange={handleChange}
             />
-
-            <input type="submit" />
-          </section>
-          <section>
+          </div>
+          <div className="form-control">
             <label htmlFor="url">Profile Photo</label>
             <input
               type="url"
@@ -190,13 +219,15 @@ const OnBoarding = () => {
               id="url"
               onChange={handleChange}
               required={true}
+              value={formData.url}
             />
-            <div className="photo-container">
-              {formData.url && (
-                <img src={formData.url} alt="Profile picture preview" />
-              )}
-            </div>
-          </section>
+          </div>
+          <div className="photo-container">
+            {formData.url && (
+              <img src={formData.url} alt="Profile picture preview" />
+            )}
+          </div>
+          <input type="submit" className="primary-button onboarding-button" />
         </form>
       </div>
     </>

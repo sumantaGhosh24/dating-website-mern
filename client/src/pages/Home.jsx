@@ -32,7 +32,7 @@ const Home = () => {
       <div className="home">
         <h1 className="primary-title">Swipe Right</h1>
         <button className="primary-button" onClick={handleClick}>
-          {authToken ? "Signout" : "Register"}
+          {authToken ? "Logout" : "Register"}
         </button>
         {showModal && (
           <AuthModal setShowModal={setShowModal} isSignUp={isSignUp} />

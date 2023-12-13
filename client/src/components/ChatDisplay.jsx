@@ -1,5 +1,6 @@
 import {useState, useEffect} from "react";
 import axios from "axios";
+import propTypes from "prop-types";
 
 import {Chat, ChatInput} from "./";
 
@@ -11,7 +12,7 @@ const ChatDisplay = ({user, clickedUser}) => {
 
   const getUsersMessages = async () => {
     try {
-      const response = await axios.get("http://localhost:8080/api/messages", {
+      const response = await axios.get("http://localhost:8080/api/message", {
         params: {userId: userId, correspondingUserId: clickedUserId},
       });
       setUsersMessages(response.data);
@@ -22,7 +23,7 @@ const ChatDisplay = ({user, clickedUser}) => {
 
   const getClickedUsersMessages = async () => {
     try {
-      const response = await axios.get("http://localhost:8080/api/messages", {
+      const response = await axios.get("http://localhost:8080/api/message", {
         params: {userId: clickedUserId, correspondingUserId: userId},
       });
       setClickedUsersMessages(response.data);
@@ -43,7 +44,7 @@ const ChatDisplay = ({user, clickedUser}) => {
     formattedMessage["name"] = user?.first_name;
     formattedMessage["img"] = user?.url;
     formattedMessage["message"] = message.message;
-    formattedMessage["timestamp"] = message.timestamp;
+    formattedMessage["createdAt"] = message.createdAt;
     messages.push(formattedMessage);
   });
 
@@ -52,17 +53,20 @@ const ChatDisplay = ({user, clickedUser}) => {
     formattedMessage["name"] = clickedUser?.first_name;
     formattedMessage["img"] = clickedUser?.url;
     formattedMessage["message"] = message.message;
-    formattedMessage["timestamp"] = message.timestamp;
+    formattedMessage["createdAt"] = message.createdAt;
     messages.push(formattedMessage);
   });
 
   const descendingOrderMessages = messages?.sort((a, b) =>
-    a.timestamp.localeCompare(b.timestamp)
+    a.createdAt?.localeCompare(b.createdAt)
   );
 
   return (
     <>
-      <Chat descendingOrderMessages={descendingOrderMessages} />
+      <Chat
+        descendingOrderMessages={descendingOrderMessages}
+        userName={user?.first_name}
+      />
       <ChatInput
         user={user}
         clickedUser={clickedUser}
@@ -71,6 +75,11 @@ const ChatDisplay = ({user, clickedUser}) => {
       />
     </>
   );
+};
+
+ChatDisplay.propTypes = {
+  user: propTypes.any,
+  clickedUser: propTypes.any,
 };
 
 export default ChatDisplay;

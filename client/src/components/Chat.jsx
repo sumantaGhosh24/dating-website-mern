@@ -1,11 +1,16 @@
-const Chat = ({descendingOrderMessages}) => {
+import propTypes from "prop-types";
+
+const Chat = ({descendingOrderMessages, userName}) => {
   return (
     <>
       <div className="chat-display">
         {descendingOrderMessages.map((message, _index) => (
-          <div key={_index}>
+          <div
+            key={_index}
+            className={`chat ${userName !== message.name && "user-chat"}`}
+          >
             <div className="chat-message-header">
-              <div className="img-container">
+              <div className="chat-container-img">
                 <img src={message.img} alt={message.name} />
               </div>
               <p>{message.name}</p>
@@ -16,6 +21,11 @@ const Chat = ({descendingOrderMessages}) => {
       </div>
     </>
   );
+};
+
+Chat.propTypes = {
+  descendingOrderMessages: propTypes.any,
+  userName: propTypes.string,
 };
 
 export default Chat;

@@ -1,5 +1,6 @@
 import {useState} from "react";
 import axios from "axios";
+import propTypes from "prop-types";
 
 const ChatInput = ({
   user,
@@ -13,7 +14,6 @@ const ChatInput = ({
 
   const addMessage = async () => {
     const message = {
-      timestamp: new Date().toISOString(),
       from_userId: userId,
       to_userId: clickedUserId,
       message: textArea,
@@ -40,6 +40,13 @@ const ChatInput = ({
       </button>
     </div>
   );
+};
+
+ChatInput.propTypes = {
+  user: propTypes.any,
+  clickedUser: propTypes.any,
+  getUserMessages: propTypes.any,
+  getClickedUsersMessages: propTypes.any,
 };
 
 export default ChatInput;

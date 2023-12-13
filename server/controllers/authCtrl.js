@@ -14,7 +14,7 @@ const authCtrl = {
       if (existingUser) {
         return res
           .status(400)
-          .send("This email already register, try another one.");
+          .json({message: "This email already register, try another one."});
       }
       const sanitizedEmail = email.toLowerCase();
       const newUser = new User({
@@ -28,7 +28,7 @@ const authCtrl = {
       });
       return res.status(201).json({token, userId: generatedUserId});
     } catch (error) {
-      return res.status(500).send(error.message);
+      return res.status(500).json({message: error.message});
     }
   },
   login: async (req, res) => {
@@ -40,9 +40,9 @@ const authCtrl = {
         const token = jwt.sign(user.toJSON(), email, {expiresIn: 60 * 24});
         return res.status(201).json({token, userId: user.user_id});
       }
-      return res.status(400).send("Invalid Credentials.");
+      return res.status(400).json({message: "Invalid Credentials."});
     } catch (error) {
-      return res.status(500).send(error.message);
+      return res.status(500).json({message: error.message});
     }
   },
 };

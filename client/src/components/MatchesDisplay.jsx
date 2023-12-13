@@ -1,10 +1,11 @@
 import {useEffect, useState} from "react";
 import {useCookies} from "react-cookie";
 import axios from "axios";
+import propTypes from "prop-types";
 
 const MatchesDisplay = ({matches, setClickedUser}) => {
   const [matchedProfiles, setMatchedProfiles] = useState(null);
-  const [cookies, setCookie, removeCookie] = useCookies(null);
+  const [cookies] = useCookies(null);
 
   const matchedUserIds = matches?.map(({user_id}) => user_id);
   const userId = cookies.UserId;
@@ -38,7 +39,7 @@ const MatchesDisplay = ({matches, setClickedUser}) => {
           className="match-card"
           onClick={() => setClickedUser(match)}
         >
-          <div className="img-container">
+          <div className="chat-container-img">
             <img src={match?.url} alt={match?.first_name} />
           </div>
           <h3>{match?.first_name}</h3>
@@ -46,6 +47,11 @@ const MatchesDisplay = ({matches, setClickedUser}) => {
       ))}
     </div>
   );
+};
+
+MatchesDisplay.propTypes = {
+  matches: propTypes.any,
+  setClickedUser: propTypes.any,
 };
 
 export default MatchesDisplay;

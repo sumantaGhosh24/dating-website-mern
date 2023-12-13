@@ -9,7 +9,7 @@ const Dashboard = () => {
   const [user, setUser] = useState(null);
   const [genderedUsers, setGenderedUsers] = useState(null);
   const [lastDirection, setLastDirection] = useState();
-  const [cookies, setCookie, removeCookie] = useCookies(["user"]);
+  const [cookies] = useCookies(["user"]);
 
   const userId = cookies.UserId;
 
@@ -60,6 +60,14 @@ const Dashboard = () => {
     }
   };
 
+  const matchedUserIds = user?.matches
+    ?.map(({user_id}) => user_id)
+    .concat(userId);
+
+  const filteredGenderedUsers = genderedUsers?.filter(
+    (genderedUser) => !matchedUserIds?.includes(genderedUser.user_id)
+  );
+
   const swiped = (direction, swipedUserId) => {
     if (direction === "right") {
       updateMatches(swipedUserId);
@@ -70,16 +78,6 @@ const Dashboard = () => {
   const outOfFrame = (name) => {
     console.log(name + " left the screen!");
   };
-
-  const matchedUserIds = user?.matches
-    ?.map(({user_id}) => user_id)
-    .concat(userId);
-
-  const filteredGenderedUsers = genderedUsers?.filter(
-    (genderedUser) => !matchedUserIds?.includes(genderedUser.user_id)
-  );
-
-  console.log("filteredGenderedUsers ", filteredGenderedUsers);
 
   return (
     <>
@@ -96,9 +94,19 @@ const Dashboard = () => {
                   onCardLeftScreen={() => outOfFrame(genderedUser.first_name)}
                 >
                   <div
-                    style={{backgroundImage: "url(" + genderedUser.url + ")"}}
+                    style={{
+                      backgroundImage: "url(" + genderedUser.url + ")",
+                      backgroundSize: "cover",
+                      height: "643px",
+                      width: "434px",
+                      backgroundPosition: "center",
+                      padding: "10px",
+                      borderRadius: "10px",
+                    }}
                   >
-                    <h3>{genderedUser.first_name}</h3>
+                    <h3 style={{textTransform: "capitalize"}}>
+                      {genderedUser.first_name}
+                    </h3>
                   </div>
                 </TinderCard>
               ))}
